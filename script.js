@@ -1,3 +1,26 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+import {
+  getAuth,
+  signInAnonymously,
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
 const button = document.querySelector(".bot-jump");
 const loveStartDate = new Date(2026, 0, 16, 0, 0, 0);
 const timeParts = {
@@ -15,6 +38,10 @@ const chatBackdrop = document.querySelector(".chat-backdrop");
 const letterShell = document.querySelector(".letter-shell");
 const letterOpen = document.querySelector(".letter-open");
 const quickPrompts = document.querySelectorAll("[data-prompt]");
+
+let conversationId = "";
+let chatReady = false;
+const renderedMessages = new Set();
 
 const botReplies = [
   "Tu sonrisa es una de mis formas favoritas de sentir que todo esta bien.",
@@ -61,7 +88,7 @@ const hundredReasons = [
   "Porque contigo puedo ser yo",
   "Porque me inspiras a ser mejor",
   "Porque me das motivos para sonreir",
-  "Porque haces que extrañarte tenga sentido",
+  "Porque haces que extranarte tenga sentido",
   "Porque me haces sentir en casa",
   "Porque contigo hasta el silencio es bonito",
   "Porque me encanta cuidarte",
@@ -123,9 +150,9 @@ const hundredReasons = [
   "Porque me haces sentir elegido",
   "Porque te elijo tambien",
   "Porque me importas muchisimo",
-  "Porque quiero verte cumplir tus sueños",
+  "Porque quiero verte cumplir tus suenos",
   "Porque quiero celebrar tus logros",
-  "Porque quiero acompañarte en dias buenos y malos",
+  "Porque quiero acompanarte en dias buenos y malos",
   "Porque amarte se siente natural",
   "Porque simplemente eres tu",
 ];
@@ -159,6 +186,34 @@ const keywordReplies = [
       "Hermosa se queda corto: tienes luz, ternura y una forma unica de hacerme feliz.",
   },
 ];
+
+function conversationRef() {
+  return doc(db, "loveConversations", conversationId);
+}
+
+function messagesRef() {
+  return collection(db, "loveConversations", conversationId, "messages");
+}
+
+async function saveMessage(text, sender) {
+  await setDoc(
+    conversationRef(),
+    {
+      lastMessage: text,
+      lastSender: sender,
+      visitorUid: conversationId,
+      updatedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  await addDoc(messagesRef(), {
+    text,
+    sender,
+    createdAt: serverTimestamp(),
+  });
+}
 
 function openChat() {
   document.body.classList.add("chat-open");
@@ -207,10 +262,12 @@ function updateLoveCounter() {
   timeParts.seconds.textContent = String(seconds).padStart(2, "0");
 }
 
-function addMessage(text, type) {
-  if (!chatMessages) {
+function addMessage(text, type, id = crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`) {
+  if (!chatMessages || renderedMessages.has(id)) {
     return;
   }
+
+  renderedMessages.add(id);
 
   const message = document.createElement("div");
   message.className = `message ${type}`;
@@ -244,18 +301,69 @@ function getBotReply(text) {
   return botReplies[index];
 }
 
-function sendToBot(text) {
+async function sendToBot(text) {
   const cleanText = text.trim();
 
-  if (!cleanText) {
-    addMessage("Escribeme algo y yo le pongo corazoncito a la respuesta.", "bot");
+  if (!chatReady) {
+    addMessage("Estoy conectando el chat. Intenta otra vez en unos segundos.", "bot");
     return;
   }
 
-  addMessage(cleanText, "user");
-  window.setTimeout(() => {
-    addMessage(getBotReply(cleanText), "bot");
-  }, 450);
+  if (!cleanText) {
+    addMessage("Escribeme algo y yo lo guardo con corazoncito.", "bot");
+    return;
+  }
+
+  addMessage(cleanText, "user", `local-${Date.now()}`);
+  chatInput?.setAttribute("disabled", "true");
+
+  try {
+    await saveMessage(cleanText, "visitor");
+
+    window.setTimeout(() => {
+      addMessage(getBotReply(cleanText), "bot");
+      addMessage("Tambien se lo deje guardado para que pueda responderte aqui mismo.", "bot");
+    }, 450);
+  } catch (error) {
+    console.error(error);
+    addMessage("No pude guardar el mensaje. Revisa tu conexion e intenta otra vez.", "bot");
+  } finally {
+    chatInput?.removeAttribute("disabled");
+    chatInput?.focus();
+  }
+}
+
+function listenForAdminReplies() {
+  const messagesQuery = query(messagesRef(), orderBy("createdAt", "asc"), limit(100));
+
+  onSnapshot(messagesQuery, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type !== "added") {
+        return;
+      }
+
+      const data = change.doc.data();
+
+      if (data.sender === "admin") {
+        addMessage(data.text, "bot", change.doc.id);
+      }
+    });
+  });
+}
+
+async function initChatConnection() {
+  try {
+    const credentials = await signInAnonymously(auth);
+    conversationId = credentials.user.uid;
+    chatReady = true;
+    listenForAdminReplies();
+  } catch (error) {
+    console.error(error);
+    addMessage(
+      "El chat real necesita que Firebase tenga activado el acceso anonimo. Avisale a mi persona favorita para terminar de conectarlo.",
+      "bot",
+    );
+  }
 }
 
 if (chatForm && chatInput) {
@@ -263,7 +371,6 @@ if (chatForm && chatInput) {
     event.preventDefault();
     sendToBot(chatInput.value);
     chatInput.value = "";
-    chatInput.focus();
   });
 }
 
@@ -275,3 +382,4 @@ quickPrompts.forEach((promptButton) => {
 
 updateLoveCounter();
 setInterval(updateLoveCounter, 1000);
+initChatConnection();

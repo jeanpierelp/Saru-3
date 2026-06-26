@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TuPopotin Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admin.css?v=1" />
+  </head>
+  <body>
+    <main class="admin-shell">
+      <section class="login-panel" data-view="login">
+        <span>TuPopotin Admin</span>
+        <h1>Entrar para responder mensajes</h1>
+        <p>Usa el correo y contrasena que creaste en Firebase Authentication.</p>
+
+        <form class="login-form">
+          <label>
+            Correo
+            <input id="admin-email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Contrasena
+            <input id="admin-password" type="password" autocomplete="current-password" required />
+          </label>
+          <button type="submit">Entrar</button>
+          <p class="form-status" data-login-status></p>
+        </form>
+      </section>
+
+      <section class="admin-panel is-hidden" data-view="admin">
+        <header class="admin-header">
+          <div>
+            <span>Panel privado</span>
+            <h1>Mensajes del bot</h1>
+          </div>
+          <button class="logout-button" type="button">Salir</button>
+        </header>
+
+        <div class="admin-grid">
+          <aside class="conversation-list" aria-label="Conversaciones">
+            <h2>Conversaciones</h2>
+            <div class="conversation-items"></div>
+          </aside>
+
+          <section class="conversation-panel">
+            <div class="empty-state">
+              Elige una conversacion para responder.
+            </div>
+
+            <div class="messages-panel is-hidden">
+              <div class="admin-messages"></div>
+
+              <form class="reply-form">
+                <label class="sr-only" for="reply-input">Responder</label>
+                <textarea id="reply-input" placeholder="Escribe tu respuesta..." required></textarea>
+                <button type="submit">Responder</button>
+              </form>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="admin.js?v=1"></script>
+  </body>
+</html>
