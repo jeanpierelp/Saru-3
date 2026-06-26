@@ -161,10 +161,23 @@ p {
   font-size: clamp(2rem, 4vw, 3.6rem);
 }
 
-.logout-button {
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.logout-button,
+.notify-button {
   padding: 12px 14px;
   background: rgba(255, 253, 251, 0.14);
   color: #fffdfb;
+}
+
+.notify-button.is-on {
+  background: #fffdfb;
+  color: var(--wine);
 }
 
 .admin-grid {
@@ -212,6 +225,18 @@ p {
   font-weight: 600;
 }
 
+.conversation-button strong {
+  display: inline-grid;
+  min-width: 26px;
+  height: 22px;
+  margin-left: 8px;
+  border-radius: 999px;
+  background: var(--rose);
+  color: #fffdfb;
+  place-items: center;
+  font-size: 0.72rem;
+}
+
 .conversation-button.is-active span {
   color: rgba(255, 253, 251, 0.72);
 }
@@ -250,6 +275,19 @@ p {
   border-radius: 8px;
   line-height: 1.5;
   white-space: pre-line;
+}
+
+.admin-message span {
+  display: block;
+}
+
+.admin-message small {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-align: right;
+  opacity: 0.72;
 }
 
 .admin-message.visitor {
@@ -295,6 +333,14 @@ p {
     width: 100%;
   }
 
+  .admin-actions {
+    width: 100%;
+  }
+
+  .notify-button {
+    flex: 1;
+  }
+
   .admin-grid {
     grid-template-columns: 1fr;
   }
@@ -318,4 +364,3 @@ p {
     grid-template-columns: 1fr;
   }
 }
-

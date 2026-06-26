@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Playfair+Display:wght@700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=10" />
+    <link rel="stylesheet" href="styles.css?v=15" />
   </head>
   <body>
     <header class="hero">
@@ -218,7 +218,8 @@
 
     <button class="bot-jump" type="button" aria-label="Ir a TuPopotin bot">
       <img src="assets/memory-mirror-smile.jpeg" alt="" />
-      <span aria-hidden="true">&hearts;</span>
+      <span class="bot-heart" aria-hidden="true">&hearts;</span>
+      <span class="bot-badge" aria-live="polite" hidden>0</span>
     </button>
 
     <div class="chat-backdrop" aria-hidden="true"></div>
@@ -228,7 +229,7 @@
         <img class="bot-avatar" src="assets/memory-mirror-smile.jpeg" alt="Foto para TuPopotin bot" />
         <div>
           <span>TuPopotin bot</span>
-          <strong>Siempre listo para endulzar el dia</strong>
+          <strong>Te lee y espera mi respuesta</strong>
         </div>
         <button class="chat-close" type="button" aria-label="Cerrar chat">Cerrar</button>
       </div>
@@ -237,15 +238,15 @@
         <div class="message-row bot-row">
           <img class="message-avatar" src="assets/memory-mirror-smile.jpeg" alt="" />
           <div class="message bot">
-            Hola, soy TuPopotin bot. Escribeme algo bonito y se lo guardo para que pueda responderte.
+            Hola, soy TuPopotin bot. Escribeme algo bonito y se lo guardo para que pueda responderte aqui.
           </div>
         </div>
       </div>
 
       <div class="quick-prompts" aria-label="Mensajes rapidos">
-        <button type="button" data-prompt="Dime algo bonito para ella">Algo bonito</button>
-        <button type="button" data-prompt="100 razones por las que te amo">100 razones por las que te amo</button>
-        <button type="button" data-prompt="Dame una frase para dedicarle">Frase para dedicar</button>
+        <button type="button" data-local-reply="sweet">Algo bonito para ti</button>
+        <button type="button" data-local-reply="reasons">100 razones por las que te amo</button>
+        <button type="button" data-local-reply="phrase">Frases bonitas para ti</button>
       </div>
 
       <form class="chat-form">
@@ -255,6 +256,6 @@
       </form>
     </aside>
 
-    <script type="module" src="script.js?v=10"></script>
+    <script type="module" src="script.js?v=15"></script>
   </body>
 </html>

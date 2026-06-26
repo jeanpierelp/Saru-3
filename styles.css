@@ -686,6 +686,20 @@ body.chat-open .chatbot,
   box-shadow: 0 8px 24px rgba(68, 22, 48, 0.08);
 }
 
+.message-text {
+  display: block;
+}
+
+.message-meta {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  text-align: right;
+  opacity: 0.72;
+}
+
 .message-row {
   max-width: 88%;
   display: flex;
@@ -906,7 +920,8 @@ body.chat-open .chatbot,
   object-position: 52% 34%;
 }
 
-.bot-jump span {
+.bot-heart,
+.bot-badge {
   position: absolute;
   right: -4px;
   bottom: -2px;
@@ -918,6 +933,17 @@ body.chat-open .chatbot,
   display: grid;
   place-items: center;
   font-size: 0.88rem;
+}
+
+.bot-badge {
+  right: auto;
+  left: -4px;
+  top: -4px;
+  bottom: auto;
+  min-width: 26px;
+  padding: 0 6px;
+  background: var(--blue);
+  font-size: 0.72rem;
 }
 
 @media (max-width: 980px) {
