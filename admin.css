@@ -24,6 +24,7 @@ body {
     linear-gradient(180deg, #fff7f1 0%, #f7e4de 52%, #fffdf9 100%);
   color: var(--ink);
   font-family: Inter, system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
 button,
@@ -187,6 +188,7 @@ p {
 }
 
 .conversation-list {
+  min-width: 0;
   border-right: 1px solid rgba(75, 22, 49, 0.12);
   background: rgba(255, 247, 241, 0.72);
 }
@@ -198,6 +200,7 @@ p {
 }
 
 .conversation-items {
+  min-width: 0;
   display: grid;
   gap: 8px;
   padding: 0 12px 16px;
@@ -205,11 +208,13 @@ p {
 
 .conversation-button {
   width: 100%;
+  min-width: 0;
   padding: 13px;
   background: var(--cream);
   color: var(--ink);
   text-align: left;
   box-shadow: 0 10px 24px rgba(68, 22, 48, 0.08);
+  overflow: hidden;
 }
 
 .conversation-button.is-active {
@@ -223,6 +228,9 @@ p {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .conversation-button strong {
@@ -252,6 +260,7 @@ p {
   display: grid;
   place-items: center;
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .messages-panel {
@@ -324,24 +333,56 @@ p {
 }
 
 @media (max-width: 760px) {
-  .admin-header {
-    align-items: flex-start;
-    flex-direction: column;
+  body {
+    background:
+      linear-gradient(180deg, #fff7f1 0%, #f7e4de 42%, #fffdf9 100%);
   }
 
-  .logout-button {
+  .admin-shell {
+    width: min(100% - 20px, 560px);
+    padding: 14px 0 22px;
+  }
+
+  .login-panel {
+    margin-top: 20px;
+    padding: 22px;
+  }
+
+  .admin-panel {
+    border-radius: 8px;
+  }
+
+  .admin-header {
+    padding: 18px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .admin-header h1 {
+    font-size: clamp(2.05rem, 11vw, 3rem);
+  }
+
+  .logout-button,
+  .notify-button {
     width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
   }
 
   .admin-actions {
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 
   .notify-button {
-    flex: 1;
+    font-size: 0.9rem;
   }
 
   .admin-grid {
+    min-height: 0;
     grid-template-columns: 1fr;
   }
 
@@ -350,17 +391,67 @@ p {
     border-bottom: 1px solid rgba(75, 22, 49, 0.12);
   }
 
+  .conversation-list h2 {
+    padding: 16px 18px 10px;
+    font-size: 1.28rem;
+  }
+
   .conversation-items {
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(220px, 1fr);
-    overflow-x: auto;
+    max-height: 230px;
+    padding: 0 14px 14px;
+    overflow-y: auto;
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+  }
+
+  .conversation-button {
+    padding: 12px;
+  }
+
+  .conversation-panel {
+    min-height: 360px;
+  }
+
+  .empty-state {
+    min-height: 220px;
+    padding: 22px;
+  }
+
+  .messages-panel {
+    min-height: 420px;
+    max-height: calc(100vh - 260px);
+  }
+
+  .admin-messages {
+    padding: 14px;
   }
 
   .admin-message {
     max-width: 92%;
+    padding: 11px 12px;
   }
 
   .reply-form {
     grid-template-columns: 1fr;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .reply-form textarea {
+    min-height: 48px;
+  }
+
+  .reply-form button {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-header h1 {
+    font-size: 2.2rem;
   }
 }

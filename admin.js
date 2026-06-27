@@ -197,7 +197,7 @@ logoutButton?.addEventListener("click", () => {
 
 notifyButton?.addEventListener("click", async () => {
   if (!("Notification" in window)) {
-    notifyButton.textContent = "No soportado";
+    notifyButton.textContent = "Avisos no disponibles";
     return;
   }
 
